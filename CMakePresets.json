@@ -1,0 +1,46 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "default",
+      "description": "Default build",
+      "binaryDir": "${sourceDir}/build/default",
+      "cacheVariables": {
+        "CMAKE_RUNTIME_OUTPUT_DIRECTORY": "${sourceDir}/dist",
+        "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "${sourceDir}/build",
+        "CMAKE_LIBRARY_OUTPUT_DIRECTORY": "${sourceDir}/build"
+      }
+    },
+    {
+      "name": "release",
+      "description": "Release build",
+      "binaryDir": "${sourceDir}/build/release",
+      "inherits": "default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "description": "Debug build",
+      "binaryDir": "${sourceDir}/build/debug",
+      "inherits": "default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "release",
+      "hidden": false,
+      "configurePreset": "default"
+    },
+    {
+      "name": "debug",
+      "hidden": false,
+      "configurePreset": "debug"
+    }
+  ]
+}
