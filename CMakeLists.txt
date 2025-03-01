@@ -45,7 +45,7 @@ file(GLOB_RECURSE SRC_FILES "${SRC_DIR}/*.c" "${SRC_DIR}/*.cpp")
 add_executable(virtual-kushtia "${SRC_FILES}")
 
 add_custom_target(web_dir
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/web
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/web ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/web
 )
 
 add_dependencies(virtual-kushtia web_dir)

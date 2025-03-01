@@ -17,5 +17,19 @@ cd dist
 # Remove first argument if it's "0"
 [[ "$1" == "0" ]] && shift
 
-# Run the program with remaining arguments
+# Define source and destination for monitoring
+SRC_DIR="$DIR/web"
+DEST_DIR="$DIR/dist/web"
+
+# Start the file monitor script in the background
+: >"$DIR/build/monitor_web.log" && "$DIR/script/monitor_web.sh" "$SRC_DIR" "$DEST_DIR" >"$DIR/build/monitor_web.log" 2>&1 &
+
+# Store the PID of the monitoring process
+MONITOR_PID=$!
+
+# Run the main program and wait for it to finish
 ./virtual-kushtia "$@"
+
+# Kill the monitoring script when the main program exits
+kill $MONITOR_PID 2>/dev/null
+wait $MONITOR_PID 2>/dev/null || true # Ensure cleanup
