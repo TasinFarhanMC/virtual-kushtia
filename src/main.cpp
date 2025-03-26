@@ -1,99 +1,106 @@
-#include "phc.hpp"
-#include <cpr/cpr.h>
+#include <array>
+#include <crow/app.h>
 
-std::unordered_map<std::string, std::string> parse_form_data(const std::string &body) {
-  std::unordered_map<std::string, std::string> form_data;
-  std::istringstream ss(body);
-  std::string pair;
+using namespace crow;
 
-  while (std::getline(ss, pair, '&')) {
-    size_t pos = pair.find('=');
-    if (pos != std::string::npos) {
-      std::string key = pair.substr(0, pos);
-      std::string value = pair.substr(pos + 1);
+namespace fs = std::filesystem;
 
-      // Decode URL-encoded characters (e.g., %40 → @)
-      for (size_t i = 0; i < value.length(); i++) {
-        if (value[i] == '%' && i + 2 < value.length()) {
-          int hex = std::stoi(value.substr(i + 1, 2), nullptr, 16);
-          value.replace(i, 3, 1, static_cast<char>(hex));
+template <typename T, size_t size> using Array = std::array<T, size>;
+using String = std::string;
+using Map = std::unordered_map<String, String>;
+
+void cache(Map &map, const char *path) {
+  try {
+    for (const auto &item : fs::recursive_directory_iterator(path)) {
+      if (!item.is_regular_file()) continue;
+      const size_t size = item.file_size();
+
+      std::ifstream file(item.path(), std::ios::binary);
+      if (!file) continue;
+
+      String &buffer = map.try_emplace(item.path(), size, '\0').first->second;
+      file.read(buffer.data(), size);
+    }
+  } catch (const std::exception &e) { std::cerr << "Error: " << e.what() << '\n'; }
+}
+
+Map decode_url(const String &body, const size_t keys) {
+  constexpr auto table = []() consteval {
+    Array<unsigned char, 256> table {};
+    table.fill(255);
+    for (int i = '0'; i <= '9'; ++i) table[i] = i - '0';
+    for (int i = 'A'; i <= 'F'; ++i) table[i] = i - 'A' + 10;
+    for (int i = 'a'; i <= 'f'; ++i) table[i] = i - 'a' + 10;
+    return table;
+  }();
+
+  char key_buf[512], val_buf[512];
+
+  Map form_data;
+  form_data.reserve(keys);
+  size_t start = 0;
+
+  while (start != String::npos) {
+    size_t end = body.find('&', start);
+    size_t pos = body.find('=', start);
+
+    if (pos != String::npos && (end == String::npos || pos < end)) {
+      size_t key_size = 0, val_size = 0;
+
+      // Corrected size calculation
+      size_t key_end = pos;
+      for (size_t i = start; i < key_end; ++i) {
+        char c = body[i];
+        if (c == '%' && i + 2 < key_end) {
+          unsigned char v1 = table[body[i + 1]];
+          unsigned char v2 = table[body[i + 2]];
+
+          if (v1 == 255 || v2 == 255) continue;
+          key_buf[key_size++] = (v1 << 4) | v2;
+          i += 2;
+        } else {
+          key_buf[key_size++] = c;
         }
       }
 
-      form_data[key] = value;
+      // Corrected size calculation
+      size_t val_end = (end == String::npos) ? body.size() : end;
+      for (size_t i = pos + 1; i < val_end; ++i) {
+        char c = body[i];
+        if (c == '%' && i + 2 < val_end) {
+          unsigned char v1 = table[body[i + 1]];
+          unsigned char v2 = table[body[i + 2]];
+
+          if (v1 == 255 || v2 == 255) continue;
+          val_buf[val_size++] = (v1 << 4) | v2;
+          i += 2;
+        } else {
+          val_buf[val_size++] = c;
+        }
+      }
+
+      form_data.emplace(
+          std::piecewise_construct, std::forward_as_tuple(key_buf, key_size),
+          std::forward_as_tuple(val_buf, val_size)
+      );
     }
+
+    start = (end == String::npos) ? String::npos : end + 1;
   }
+
   return form_data;
-}
-
-crow::response refresh_token() {
-  const std::string clientId =
-      "896874297417-eprj6ua5k0dghqa66pvacdm36mqjvdcd.apps.googleusercontent.com";
-  const std::string clientSecret = "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";
-  const std::string refreshToken =
-      "1//"
-      "0gcOydbf3CRi7CgYIARAAGBASNwF-"
-      "L9Irgh5fwbJsZIf4rkZCb0AXSlYt7dWaJ7MZrBxLwHHYT92YyF7rA5ACOLLAINoEO5cDEG4";
-  const std::string scope = "https://www.googleapis.com/auth/gmail.readonly";
-
-  // Build request body
-  std::string body = "grant_type=refresh_token"
-                     "&client_id=" +
-                     clientId + "&client_secret=" + clientSecret +
-                     "&refresh_token=" + refreshToken + "&scope=" + scope;
-
-  // Make the HTTP POST request
-  cpr::Response response = cpr::Post(
-      cpr::Url {"https://oauth2.googleapis.com/token"},
-      cpr::Header {{"Content-Type", "application/x-www-form-urlencoded"}}, cpr::Body {body}
-  );
-
-  // Log response
-  CROW_LOG_INFO << "Response status: " << response.status_code;
-  CROW_LOG_INFO << "Response body: " << response.text;
-
-  return crow::response(response.status_code, response.text);
 }
 
 int main(int argc, char *argv[]) {
   const int port = argc > 1 ? std::atoi(argv[1]) : 8000;
-  crow::SimpleApp app;
 
-  crow::mustache::set_global_base("web");
+  SimpleApp server;
 
-  CROW_ROUTE(app, "/")([]() { return crow::mustache::load_text_unsafe("login.html"); });
-  CROW_ROUTE(app, "/api/login")
-      .methods(crow::HTTPMethod::POST)([](const crow::request &req) {
-        if (req.get_header_value("Content-Type") != "application/x-www-form-urlencoded") {
-          auto response = crow::response(crow::status::SEE_OTHER);
-          response.set_header("Location", "/invalid");
-          return response;
-        }
+  /*server.port(port).multithreaded().run();*/
+  for (const auto &a : decode_url("Hello%20World=Mine&This=1", 2)) {
+    CROW_LOG_INFO << "Key: " << a.first;
+    CROW_LOG_INFO << "Value: " << a.second;
+  }
 
-        CROW_LOG_INFO << "Body: " << req.body;
-        auto data = parse_form_data(req.body);
-
-        CROW_LOG_INFO << "Email: " << data["email"];
-        CROW_LOG_INFO << "Pass: " << data["password"];
-
-        auto response = crow::response(crow::status::SEE_OTHER);
-        response.set_header("Location", "/page");
-        return response;
-      });
-
-  CROW_ROUTE(app, "/api/login")([]() {
-    auto response = crow::response(crow::status::SEE_OTHER);
-    response.set_header("Location", "/invalid");
-    return response;
-  });
-
-  CROW_ROUTE(app, "/invalid")([]() {
-    return crow::mustache::load_text_unsafe("invalid.html");
-  });
-  CROW_ROUTE(app, "/page")([]() { return crow::mustache::load_text_unsafe("page.html"); });
-
-  CROW_ROUTE(app, "/api/token")([]() { return refresh_token(); });
-
-  app.port(port).multithreaded().run();
   return 0;
 }
