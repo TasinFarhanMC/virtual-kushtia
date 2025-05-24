@@ -1,0 +1,240 @@
+body {
+  background-color: #203040;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Remove absolute positioning so they flow vertically */
+.top-bar {
+  display: flex;
+  width: 100%;
+  height: 8vh;
+  background-color: #314a62;
+  align-items: center;
+  padding: 0 1rem;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.search-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(#314a62, #203040);
+  padding: 1vh 0;
+  box-sizing: border-box;
+  margin-bottom: 1vh; /* Add space below the search bar */
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 50vw;
+  background: #203040;
+  border-radius: 1vw;
+  padding: 0.5vw;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 1vh 1vw;
+  padding-left: 3vw;
+  font-size: 1.2vw;
+  color: white;
+  background-color: transparent;
+  border: none;
+  border-radius: 1vw;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1vw;
+  height: 2vh;
+  width: 2vh;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+  opacity: 0.8;
+}
+
+.search-container:hover .search-icon {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
+}
+
+button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+button:focus {
+  outline: none;
+}
+
+.icon {
+  height: 6vh;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+button img[style="scale: 50%"] {
+  transform: scale(0.5);
+}
+
+button:hover .icon {
+  transform: scale(1.1);
+}
+
+/* Remove absolute positioning, let slider flow normally if used */
+.slider {
+  position: relative; /* Add back so .progress-bar positions correctly */
+  width: 50vw;
+  height: 50vh;
+  overflow: hidden;
+  border-radius: 1vw;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.slider img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.slider img.visible {
+  opacity: 1;
+}
+
+.progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.progress {
+  height: 100%;
+  background-color: #00bcd4;
+  transition: width 0.5s ease-in-out;
+}
+
+/* Main Icon Buttons */
+.icon-buttons {
+  display: flex;
+  gap: 4vw;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.circular-icon {
+  width: 8vw;
+  height: 8vw;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  outline: none;
+  transition: transform 0.2s ease;
+}
+
+.circular-icon img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.circular-icon:hover {
+  transform: scale(1.1);
+}
+
+/* Align items in a column, give consistent sizing */
+.icon-button-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 8vw; /* Adjust based on your design */
+}
+
+/* Rectangular icons - wider and rounded */
+.rect-icon {
+  width: 8vw; /* wider than before */
+  height: 6vw;
+  border-radius: 1vw; /* rounding */
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.rect-icon img {
+  max-width: 70%;
+  max-height: 70%;
+  object-fit: contain;
+}
+
+.icon-label {
+  margin-top: 1vh;
+  font-size: clamp(1rem, 1.5vw, 2rem); /* Bigger, scalable font */
+  color: white;
+  text-align: center;
+  width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* The main content container that holds sections */
+.sections-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+  gap: 2rem;
+}
+
+.section h2 {
+  text-align: left;
+  color: white;
+  font-size: 2rem;
+  margin-left: 1rem;
+}
+
+/* Ensure all rect icons have the same size and align to the left */
+.rect-icons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* Align to the left */
+  gap: 1rem; /* Optional spacing between buttons */
+}

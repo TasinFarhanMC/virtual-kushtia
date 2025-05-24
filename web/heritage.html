@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Kushtia</title>
+  <link rel="stylesheet" href="/css/heritage.css" />
+</head>
+
+<body>
+  <header class="bg-blue">
+    <div class="container">
+      <a href="/dashboard" class="home-button">Dashboard</a>
+    </div>
+  </header>
+
+
+  <main class="container">
+    <div class="card-grid" id="people-container">
+      <!-- Cards will be dynamically inserted here -->
+    </div>
+    <div class="text-center">
+      <a href="https://www.kushtia.gov.bd/en/site/page/QHBK-%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%96%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%A4-%E0%A6%AC%E0%A7%8D%E0%A6%AF%E0%A6%95%E0%A7%8D%E0%A6%A4%E0%A6%BF%E0%A6%A4%E0%A7%8D%E0%A6%AC"
+        target="_blank" class="more-info-link">
+        For More
+      </a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>
+      &copy; <span id="year"></span> Virtual Kushtia. All rights reserved. Email:
+      <a href="mailto:tasinfarhan1016@gmail.com">tasinfarhan1016@gmail.com</a>
+    </p>
+  </footer>
+
+  <script>
+    const people = [
+      {
+        name: "Rabindranath Tagore",
+        img: "/rabindranath.webp",
+        link: "https://en.wikipedia.org/wiki/Rabindranath_Tagore",
+        desc: "Rabindranath Tagore (7 May 1861 – 7 August 1941) was a Bengali polymath who worked as a poet, writer, playwright, composer, philosopher, social reformer, and painter of the Bengal Renaissance. He reshaped Bengali literature and music as well as Indian art with Contextual Modernism in the late 19th and early 20th centuries. He spent a portion of his time in Kushtia. Residing in his Kutihi Bari in Shilaidah",
+      },
+      {
+        name: "Lalon Shah",
+        img: "/lalon.webp",
+        link: "https://en.wikipedia.org/wiki/Lalon",
+        desc: "Lalon (died 17 October 1890) also known as Lalon Shah, Lalon Fakir, Shahji, was a Bengali spiritual leader, philosopher, mystic poet and social reformer. Regarded as an icon of Bengali especially Kushtia culture, he inspired and influenced many philosophers, poets and social thinkers including Rabindranath Tagore, Kazi Nazrul Islam and Allen Ginsberg. Lalon's philosophy of humanity rejects all distinctions of caste, class, and creed and takes stand against theological conflicts and racism. It denies all worldly affairs in search of the soul and embodied the socially transformative role of sub-continental Bhakti and Sufism.",
+      },
+      {
+        name: "Mir Mosharraf Hossain",
+        img: "/mosharraf.webp",
+        link: "https://en.wikipedia.org/wiki/Mir_Mosharraf_Hossain",
+        desc: "Mir Mosharraf Hossain (13 November 1847–19 December 1911) was a Bengali writer, novelist, playwright, and essayist. He was born in Lahini Para of Kumarkhali Upazilla in Kushtia. He is considered to be the first major writer to emerge from the Shia society of Bengal and one of the finest prose writers in the Bengali language. His magnum opus Bishad Sindhu (Ocean of Sorrow) is a popular classic among the Bengali readership.",
+      },
+    ];
+
+    const container = document.getElementById("people-container");
+
+    people.forEach(person => {
+      const figure = document.createElement("figure");
+
+      const link = document.createElement("a");
+      link.href = person.link;
+      link.className = "image-container";
+      link.target = "_blank";
+
+      const img = document.createElement("img");
+      img.src = person.img;
+      img.alt = person.name;
+      img.onload = (e) => setGlowColor(e.target);
+      link.appendChild(img);
+
+      const caption = document.createElement("figcaption");
+      const nameLink = document.createElement("a");
+      nameLink.href = person.link;
+      nameLink.target = "_blank";
+      nameLink.textContent = person.name;
+
+      const desc = document.createElement("p");
+      desc.textContent = person.desc;
+
+      caption.appendChild(nameLink);
+      caption.appendChild(desc);
+
+      figure.appendChild(link);
+      figure.appendChild(caption);
+
+      container.appendChild(figure);
+    });
+
+    function setGlowColor(img) {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+      let r = 0, g = 0, b = 0;
+      const pixelCount = data.length / 4;
+      for (let i = 0; i < data.length; i += 4) {
+        r += data[i];
+        g += data[i + 1];
+        b += data[i + 2];
+      }
+
+      const container = img.closest(".image-container");
+      container.style.setProperty("--glow-color", `${Math.round(r / pixelCount)}, ${Math.round(g / pixelCount)}, ${Math.round(b / pixelCount)}`);
+    }
+
+    // Set current year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+
+</html>

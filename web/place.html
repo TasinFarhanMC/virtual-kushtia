@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Virtual Kushtia</title>
+  <link rel="stylesheet" href="/css/heritage.css" />
+</head>
+
+<body>
+  <header class="bg-blue">
+    <div class="container">
+      <a href="/dashboard" class="home-button">Dashboard</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card-grid" id="people-container"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; <span id="year"></span> Virtual Kushtia. All rights reserved.</p>
+      <p>Email: <a href="mailto:tasinfarhan1016@gmail.com">tasinfarhan1016@gmail.com</a></p>
+    </div>
+  </footer>
+
+
+  <script>
+    const people = [
+      {
+        name: "Mausoleum of Lalon Shah",
+        img: "/mazar.webp",
+        link: "https://en.wikipedia.org/wiki/Mausoleum_of_Lalon_Shah",
+        desc: "Mausoleum of Lalon Shah or Lalon Akhara is the burial place of Baul Emperor Lalon, and a shrine built around this grave. The shrine is located in the village of Cheuriya in Kumarkhali Upazila of Kushtia District. Lalon Shah's shrine was not built in a day, after Lalon's death in 1890, his devotees started flocking here, the shrine originated from the large number of pilgrims. His present shrine was built there in 1963 and inaugurated by the then governor of East Pakistan, Abdul Monem Khan. Today, the shrine is visited by many visitors from different countries."
+      },
+      {
+        name: "Rabindra Kuthibari",
+        img: "/kuthibari.webp",
+        link: "https://en.wikipedia.org/wiki/Shilaidaha_Rabindra_Kuthibari",
+        desc: "Rabindra Kuthibari, located in Kushtia, Bangladesh, was the residence of Nobel laureate Rabindranath Tagore. He often stayed here to manage his family estates and wrote many of his literary works in this serene setting. The building is a two-storied colonial-style structure surrounded by lush gardens. Today, it serves as a museum preserving Tagore’s legacy and artifacts. It attracts visitors and researchers from around the world who admire Tagore's life and works. The site also hosts cultural events, celebrating his contributions to literature, music, and philosophy."
+      },
+      {
+        name: "Mohini Mill",
+        img: "/mohinimill.webp",
+        link: "https://bn.wikipedia.org/wiki/%E0%A6%AE%E0%A7%8B%E0%A6%B9%E0%A6%BF%E0%A6%A8%E0%A7%80_%E0%A6%AE%E0%A6%BF%E0%A6%B2",
+        desc: "Mohini Mill, established in 1908 by Mohini Mohan Chakraborty in Kushtia, was once the largest textile mill in Asia. It began with eight looms and expanded to 529 looms by 1922, producing up to 55,000 yards of fabric daily. The mill's success was attributed to its strategic location near Kushtia railway station and river port, facilitating the distribution of its products across Bengal and beyond."
+      }
+    ];
+
+    const container = document.getElementById("people-container");
+
+    people.forEach(person => {
+      const figure = document.createElement("figure");
+
+      const link = document.createElement("a");
+      link.href = person.link;
+      link.className = "image-container";
+      link.target = "_blank";
+
+      const img = document.createElement("img");
+      img.src = person.img;
+      img.alt = person.name;
+      img.onload = (e) => setGlowColor(e.target);
+      link.appendChild(img);
+
+      const caption = document.createElement("figcaption");
+      const nameLink = document.createElement("a");
+      nameLink.href = person.link;
+      nameLink.target = "_blank";
+      nameLink.textContent = person.name;
+
+      const desc = document.createElement("p");
+      desc.textContent = person.desc;
+
+      caption.appendChild(nameLink);
+      caption.appendChild(desc);
+
+      figure.appendChild(link);
+      figure.appendChild(caption);
+
+      container.appendChild(figure);
+    });
+
+    function setGlowColor(img) {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+      let r = 0, g = 0, b = 0;
+      const pixelCount = data.length / 4;
+      for (let i = 0; i < data.length; i += 4) {
+        r += data[i];
+        g += data[i + 1];
+        b += data[i + 2];
+      }
+
+      const container = img.closest(".image-container");
+      container.style.setProperty("--glow-color", `${Math.round(r / pixelCount)}, ${Math.round(g / pixelCount)}, ${Math.round(b / pixelCount)}`);
+    }
+
+    // Set current year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+
+</body>
+
+</html>

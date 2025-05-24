@@ -1,0 +1,176 @@
+body {
+  background-color: #203040;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+/* Container wrapping the image;
+ overflow is visible to let the glow bleed out */
+.image-container {
+  position: relative;
+  display: inline-block;
+  border-radius: 16px;
+  overflow: visible;
+  /* Default glow color (in case the image hasn't loaded yet) */
+  --glow-color: 0, 190, 255;
+}
+/* The image itself */
+.image-container img {
+  display: block;
+  width: 100%;
+  height: 12rem;
+  /* Tailwind's h-48 equivalent */
+  object-fit: cover;
+  border-radius: 16px;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+}
+/* On hover, the image scales up and uses the computed glow color */
+.image-container:hover img {
+  transform: scale(1.1);
+  box-shadow: 0 0 35px rgba(0, 1, 0);
+}
+/* The pseudo-element creates a blurry glowing radial gradient using the computed average color */
+.image-container::after {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: -10%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(0, 1, 0) 50%, transparent 75%);
+  border-radius: 16px;
+  pointer-events: none;
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.4s ease;
+  z-index: -1;
+}
+/* Reveal the glow on hover */
+.image-container:hover::after {
+  opacity: 1;
+}
+/* Global link styles */
+a {
+  text-decoration: none;
+  color: #4fa3d1;
+  transition:
+    color 0.3s ease,
+    text-shadow 0.3s ease,
+    transform 0.2s ease;
+}
+/* Underline effect */
+a::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 2px;
+  background: currentColor;
+  transition: width 0.3s ease-in-out;
+}
+/* Expand underline on hover */
+a:hover::after {
+  width: 100%;
+}
+/* Text glow effect on hover */
+a:hover {
+  color: #68c8ff;
+  text-shadow: 0 0 8px rgba(104, 200, 255, 0.7);
+  transform: scale(1.05);
+}
+/* Specific styling for navigation links */
+header a {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+/* Home link hover effect */
+header a:hover {
+  color: #a3e4ff;
+  text-shadow: 0 0 10px rgba(163, 228, 255, 0.9);
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 0.75rem 1.25rem;
+  background-color: #1a1e2e;
+  border-top-right-radius: 8px;
+  font-size: 0.875rem;
+  color: #ccc;
+  width: 100%;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Footer link styles */
+footer a {
+  color: #8bc6ff;
+}
+footer a:hover {
+  color: #fff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+}
+/* Improve readability for main content links */
+main a {
+  font-weight: 600;
+  color: #58a6ff;
+}
+main a:hover {
+  color: #82caff;
+  text-shadow: 0 0 10px rgba(130, 202, 255, 0.8);
+}
+/* Home Button Styles - Blended with Header Background */
+.home-button {
+  display: inline-block;
+  font-size: 1.8rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  color: #557;
+  border-radius: 8px;
+  transition:
+    background 0.3s ease,
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  border: none;
+  /* Completely remove any border */
+  outline: none;
+  /* Remove any focus outlines */
+}
+.home-button:hover {
+  background: rgba(37, 99, 235, 0.4);
+  /* Slightly brighter on hover */
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+.home-button:active {
+  transform: scale(0.95);
+}
+.more-info-link {
+  display: inline-block;
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.more-info-link:hover {
+  color: #fff;
+  background: rgba(37, 99, 235, 0.5);
+  text-shadow: 0 0 10px rgba(130, 202, 255, 0.8);
+  transform: scale(1.05);
+}
+.more-info-link:active {
+  transform: scale(0.95);
+}
+figcaption {
+  color: #b7c9db;
+}
