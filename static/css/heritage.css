@@ -90,27 +90,6 @@ header a:hover {
   color: #a3e4ff;
   text-shadow: 0 0 10px rgba(163, 228, 255, 0.9);
 }
-
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  padding: 0.75rem 1.25rem;
-  background-color: #1a1e2e;
-  border-top-right-radius: 8px;
-  font-size: 0.875rem;
-  color: #ccc;
-  width: 100%;
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
 /* Footer link styles */
 footer a {
   color: #8bc6ff;

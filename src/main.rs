@@ -42,7 +42,6 @@ async fn main() {
         .route("/place", get(|| async { load_html("place").await }))
         .route("/history", get(|| async { load_html("history").await }))
         .route("/pride", get(|| async { load_html("pride").await }))
-        .route("/kushtia", get(|| async { load_html("pdf/kushtia.pdf") }))
         .route("/dashboard", get(move || render_dashboard()))
         .fallback_service(ServeDir::new("static"));
 
@@ -64,11 +63,11 @@ async fn render_dashboard() -> Html<String> {
         Button {
             icon: "/icon/amarkushtia.jpg".to_string(),
             name: "আমাদের কুষ্টিয়া".to_string(),
-            url: "/kushtia".to_string(),
+            url: "/kushtia.pdf".to_string(),
         },
         Button {
             icon: "/icon/pride.jpg".to_string(),
-            name: "Pride".to_string(),
+            name: "গৌরব".to_string(),
             url: "/pride".to_string(),
         },
         Button {
@@ -248,12 +247,12 @@ async fn render_dashboard() -> Html<String> {
             header: "নাগরিক সেবা".into(),
             buttons: vec![
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/citi.jpeg".into(),
                     name: "নাগরিক অনুসন্ধান".into(),
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt2.svg".into(),
+                    icon: "/icon/land.jpeg".into(),
                     name: "অভিযোগ পোর্টাল".into(),
                     url: "https://example.com/2".into(),
                 },
@@ -278,7 +277,7 @@ async fn render_dashboard() -> Html<String> {
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/plane.png".into(),
                     name: "বিমান টিকেট".into(),
                     url: "https://example.com/1".into(),
                 },
@@ -303,22 +302,22 @@ async fn render_dashboard() -> Html<String> {
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/park.png".into(),
                     name: "পার্ক ও খেলার মাঠ".into(),
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/madrasa.png".into(),
                     name: "ধর্ম উপাসনালয়".into(),
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/insti.png".into(),
                     name: "সংগঠন".into(),
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/tour.jpg".into(),
                     name: "গুরুত্বপূর্ণ স্থান".into(),
                     url: "https://example.com/1".into(),
                 },
@@ -338,12 +337,12 @@ async fn render_dashboard() -> Html<String> {
             header: "হোটেল ও খাবার".into(),
             buttons: vec![
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/mall.png".into(),
                     name: "শপিং মল".into(),
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt2.svg".into(),
+                    icon: "/icon/hotel.png".into(),
                     name: "হোটেল".into(),
                     url: "https://example.com/2".into(),
                 },
@@ -388,12 +387,12 @@ async fn render_dashboard() -> Html<String> {
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/coaching.png".into(),
                     name: "কোচিং সেন্টার".into(),
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/it.png".into(),
                     name: "আইটি সার্ভিস".into(),
                     url: "https://example.com/1".into(),
                 },
@@ -403,7 +402,7 @@ async fn render_dashboard() -> Html<String> {
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/mobile.png".into(),
                     name: "মোবাইল ইলেকট্রনিক্স".into(),
                     url: "https://example.com/1".into(),
                 },
@@ -418,7 +417,7 @@ async fn render_dashboard() -> Html<String> {
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt2.svg".into(),
+                    icon: "/icon/ac.png".into(),
                     name: "AC Mechanic".into(),
                     url: "https://example.com/2".into(),
                 },
@@ -438,18 +437,33 @@ async fn render_dashboard() -> Html<String> {
             header: "নিকটবর্তী".into(),
             buttons: vec![
                 Button {
-                    icon: "/icon/govt1.svg".into(),
-                    name: "এটিএম ফিলিং স্টেশন".into(),
+                    icon: "/icon/atm.png".into(),
+                    name: "এটিএম".into(),
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt2.svg".into(),
-                    name: "হাসপাতাল থানা".into(),
+                    icon: "/icon/filling.png".into(),
+                    name: "ফিলিং স্টেশন".into(),
+                    url: "https://example.com/1".into(),
+                },
+                Button {
+                    icon: "/icon/police.jpeg".into(),
+                    name: "থানা".into(),
                     url: "https://example.com/2".into(),
                 },
                 Button {
-                    icon: "/icon/govt3.svg".into(),
-                    name: "পার্কিং বাস স্ট্যান্ড".into(),
+                    icon: "/icon/hosp.jpeg".into(),
+                    name: "হাসপাতাল".into(),
+                    url: "https://example.com/2".into(),
+                },
+                Button {
+                    icon: "/icon/parking.png".into(),
+                    name: "পার্কিং ".into(),
+                    url: "https://example.com/3".into(),
+                },
+                Button {
+                    icon: "/icon/busstand.png".into(),
+                    name: "বাস স্ট্যান্ড".into(),
                     url: "https://example.com/3".into(),
                 },
                 Button {
@@ -458,7 +472,7 @@ async fn render_dashboard() -> Html<String> {
                     url: "https://example.com/1".into(),
                 },
                 Button {
-                    icon: "/icon/govt1.svg".into(),
+                    icon: "/icon/park.png".into(),
                     name: "পার্ক ও খেলার মাঠ".into(),
                     url: "https://example.com/1".into(),
                 },
